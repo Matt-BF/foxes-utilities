@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container-fluid" style="margin-top:2rem">
+    <h3>Resultados para placa {{ table_file_name }}</h3>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert-dismissible fade show alert {{category}}">{{ message }}
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="row">
+        <div class="col-4">
+            {% for col in cols%}
+            <button class="toggle-vis btn btn-outline-primary" style="margin-top:2rem"
+                data-column="{{loop.index}}">{{col}}</button>
+            {% endfor %}
+        </div>
+    </div>
+    <table style="margin-top: 2rem; width:100%" class="display">
+        {{ table| safe }}
+    </table>
+</div>
+
+<link rel="stylesheet" type="text/css"
+    href="https://cdn.datatables.net/v/bs4/dt-1.10.21/b-1.6.2/b-colvis-1.6.2/b-html5-1.6.2/datatables.min.css" />
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript"
+    src="https://cdn.datatables.net/v/bs4/dt-1.10.21/b-1.6.2/b-colvis-1.6.2/b-html5-1.6.2/datatables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var table = $('#my_table').DataTable({
+            autoWidth: false
+        });
+
+        $('button.toggle-vis').on('click', function (e) {
+            e.preventDefault();
+
+            // Get the column API object
+            var column = table.column($(this).attr('data-column'));
+
+            // Toggle the visibility
+            column.visible(!column.visible());
+
+        });
+    });
+</script>
+{% endblock content %}

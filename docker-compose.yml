@@ -1,0 +1,12 @@
+version: "2.1"
+
+services:
+    foxes-dashboard:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        environment:
+            - FOXES_USERNAME=${FOXES_USERNAME}
+            - FOXES_PASSWORD=${FOXES_PASSWORD}
+        ports:
+            - 8080:3000

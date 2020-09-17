@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container-fluid" style="margin-top:2px">
+    <h3>Insira o arquivo da placa</h3>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert-dismissible fade show alert {{category}}">{{ message }}
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="container-fluid" style="margin-top:2rem">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-control">
+                <input id="placa" type="file" name="file">
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" name="plate_type" id="linha" type="radio" value="12" checked>
+                <label class="form-check-label" for="linha">Multicanal 12</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" name="plate_type" id="coluna" type="radio" value="Multiplex">
+                <label class="form-check-label" for="coluna">Multiplex</label>
+            </div>
+            <div>
+                <button class="btn btn-primary" style="margin-top:2rem" type=submit value=Upload>Upload</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}
