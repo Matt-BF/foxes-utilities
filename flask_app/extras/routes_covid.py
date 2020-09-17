@@ -30,7 +30,7 @@ def covid():
             pass
 
     if request.method == "POST":
-        num = request.form.to_dict()["plate_type"]
+        kind = request.form.to_dict()["plate_type"]
         # check if the post request has the file part
         if "file" not in request.files:
             flash("No file part", "alert-danger")
@@ -46,16 +46,16 @@ def covid():
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
             return redirect(
-                url_for("covid_table_bp.covid_result", table_file=filename, num=num)
+                url_for("covid_table_bp.covid_result", table_file=filename, kind=kind)
             )
 
     return render_template("covid.html")
 
 
-@covid_table_bp.route("/extras/covid/<table_file>_<int:num>", methods=["GET"])
-def covid_result(table_file, num):
+@covid_table_bp.route("/extras/covid/<table_file>_<kind>", methods=["GET"])
+def covid_result(table_file, kind):
     consolidated_table = consolidate(
-        os.path.join(app.config["UPLOAD_FOLDER"], table_file), num=num
+        os.path.join(app.config["UPLOAD_FOLDER"], table_file), kind=kind
     )
     cols = consolidated_table[1]
     consolidated_table = consolidated_table[0]
