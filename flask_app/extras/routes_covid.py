@@ -19,7 +19,7 @@ covid_bp = Blueprint("covid_bp", __name__, template_folder="templates")
 covid_table_bp = Blueprint("covid_table_bp", __name__, template_folder="templates")
 
 
-@covid_bp.route("/")
+@covid_bp.route("/", methods=["GET", "POST"])
 @covid_bp.route("/extras/covid", methods=["GET", "POST"])
 def covid():
     csvs = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.csv")
