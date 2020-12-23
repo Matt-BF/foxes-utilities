@@ -1,11 +1,13 @@
 dnspython
 docxtpl
 flask
+gspread
 html5lib
 httplib2
 jinja2
 matplotlib
 numpy==1.19.0
+oauth2client
 pandas
 pycparser
 pyopenssl
