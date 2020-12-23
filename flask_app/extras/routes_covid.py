@@ -3,7 +3,7 @@ from flask import (
     render_template,
     url_for,
     flash,
-    send_file,
+    send_from_directory,
     request,
     redirect,
     after_this_request,
@@ -11,6 +11,7 @@ from flask import (
 import os
 import glob
 from flask_app import app
+from flask_app import auto_recebimentos
 
 from .analyze_covid import consolidate
 
@@ -19,7 +20,6 @@ covid_bp = Blueprint("covid_bp", __name__, template_folder="templates")
 covid_table_bp = Blueprint("covid_table_bp", __name__, template_folder="templates")
 
 
-@covid_bp.route("/", methods=["GET", "POST"])
 @covid_bp.route("/extras/covid", methods=["GET", "POST"])
 def covid():
     csvs = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.csv")
@@ -54,13 +54,44 @@ def covid():
 
 @covid_table_bp.route("/extras/covid/<table_file>_<kind>", methods=["GET"])
 def covid_result(table_file, kind):
-    consolidated_table = consolidate(
-        os.path.join(app.config["UPLOAD_FOLDER"], table_file), kind=kind
-    )
-    cols = consolidated_table[1]
-    consolidated_table = consolidated_table[0]
 
-    return render_template(
-        "results.html", table_file_name=table_file, table=consolidated_table, cols=cols
-    )
+    try:
+        consolidated_table = consolidate(
+            os.path.join(app.config["UPLOAD_FOLDER"], table_file), kind=kind
+        )
+        cols = consolidated_table[1]
+        consolidated_table = consolidated_table[0]
 
+        return render_template(
+            "results.html",
+            table_file_name=table_file,
+            table=consolidated_table,
+            cols=cols,
+        )
+    except Exception:
+        flash("Sua placa está fora dos padrões, favor reveja", "alert-danger")
+        return redirect(url_for("covid_bp.covid"))
+
+@covid_bp.route("/extras/receivals", methods=["GET","POST"])
+def receivals():
+    pngs = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.png") + glob.glob(app.config["UPLOAD_FOLDER"] + "/*.zip")
+    for png in pngs:
+        try:
+            os.remove(png)
+        except FileNotFoundError:
+            pass
+
+    if request.method == "POST":
+        try:
+            form_data = request.form.to_dict()
+            date = "".join(form_data["data"].split("-")[::-1][0:2])
+            auto_recebimentos.fetch_receivals(form_data["planilha"], date)
+            auto_recebimentos.zip_pngs(date)
+            return(send_from_directory(app.config["UPLOAD_FOLDER"], f"{date}.zip", as_attachment=True))
+
+        except Exception as e:
+            print(e)
+            flash(f"Erro: {e}", "alert-danger")
+            return(redirect(url_for("covid_bp.receivals")))
+
+    return render_template("receivals.html")
