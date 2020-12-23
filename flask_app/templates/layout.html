@@ -19,13 +19,6 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='sb-admin-2.css') }}">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" crossorigin="anonymous">
 
-        <!-- Import Vega 5 & Vega-Lite 3 (does not have to be from CDN) -->
-        <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vega-lite@3"></script>
-        <!-- Import vega-embed -->
-        <script src="https://cdn.jsdelivr.net/npm/vega-embed@4"></script>
-
-
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -53,7 +46,7 @@
             <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
                 <!-- Sidebar - Brand -->
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{url_for('home')}}">
                     <div class="sidebar-brand-icon rotate-n-15">
 
                     </div>
@@ -65,77 +58,18 @@
 
                 <!-- Nav Item - Dashboard -->
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{{url_for('home')}}">
                         <i class="fas fa-fw fa-tachometer-alt"></i>
-                        <span>Dashboard</span></a>
+                        <span>Home</span></a>
                 </li>
 
+                
                 <!-- Divider -->
                 <hr class="sidebar-divider">
 
                 <!-- Heading -->
                 <div class="sidebar-heading">
                     Áreas
-                </div>
-
-                <!-- Nav Item - Pet Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePet"
-                        aria-expanded="true" aria-controls="collapsePet">
-                        <i class="fas fa-paw"></i>
-                        <span>Pet</span>
-                    </a>
-                    <div id="collapsePet" class="collapse" aria-labelledby="headingPet" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="#">Amostras para
-                                chegar</a>
-                            <a class="collapse-item" href="#">Prazos</a>
-                            <a class="collapse-item" href="#">Laudos</a>
-                            <a class="collapse-item" href="#">Consulta</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Nav Item - Usinas Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsinas"
-                        aria-expanded="true" aria-controls="collapseUsinas">
-                        <i class="fas fa-industry"></i>
-                        <span>Usinas</span>
-                    </a>
-                    <div id="collapseUsinas" class="collapse" aria-labelledby="headingUsinas"
-                        data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="#">Prazos</a>
-                            <a class="collapse-item" href="#">Laudos</a>
-                            <a class="collapse-item" href="#">Consulta</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Nav Item - Human Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHuman"
-                        aria-expanded="true" aria-controls="collapseHuman">
-                        <i class="fas fa-star-of-life"></i>
-                        <span>Humano</span>
-                    </a>
-                    <div id="collapseHuman" class="collapse" aria-labelledby="headingHuman"
-                        data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="#">Prazos</a>
-                            <a class="collapse-item" href="#">Laudos</a>
-                            <a class="collapse-item" href="#">Consulta</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Divider -->
-                <hr class="sidebar-divider">
-
-                <!-- Heading -->
-                <div class="sidebar-heading">
-                    Extras
                 </div>
 
                 <!-- Nav Item - Pages Collapse Menu -->
@@ -145,16 +79,17 @@
                         <span>Covid</span>
                     </a>
                 <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('covid_bp.receivals')}}">
+                        <i class="fas fa-vial"></i>
+                        <span>Recebimentos</span>
+                    </a>
+                <li class="nav-item">
                     <a class="nav-link" href="{{url_for('orcamentos_bp.orcamentos')}}">
                         <i class="fas fa-shopping-cart"></i>
                         <span>Orçamentos</span>
                     </a>
                     <!-- Divider -->
                     <hr class="sidebar-divider d-none d-md-block">
-
-                    <!-- Nav Item - Pages Collapse Menu -->
-                    <a class="nav-link" href="#"><i class="fas fa-sign-out-alt"></i>
-                        Logout</a>
             </ul>
 
             <!-- End of Sidebar -->

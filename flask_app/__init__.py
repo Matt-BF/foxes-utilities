@@ -13,3 +13,5 @@ from flask_app.extras.routes_orcamentos import orcamentos_bp
 app.register_blueprint(covid_bp)
 app.register_blueprint(covid_table_bp)
 app.register_blueprint(orcamentos_bp)
+
+from flask_app import routes

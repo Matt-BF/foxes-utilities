@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container-fluid">
+    <h3>Bem vindo!</h3>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert-dismissible fade show alert {{category}}">{{ message }}
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div class="row" style="margin-top:5rem; margin-left:3rem">
+        <a class="custom-card" href="{{url_for('covid_bp.covid')}}">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Laudar Covid</h4><i class="fas fa-virus"
+                        style="font-size:8rem; color:#1A1B41; text-align: center; width: 100%;"></i>
+                </div>
+            </div>
+        </a>
+
+        <a class="custom-card" href="{{url_for('covid_bp.receivals')}}">
+            <div class="card" style="margin-left: 5rem;">
+                <div class="card-body">
+                    <h4>Baixar Recebimentos</h4><i class="fas fa-vial"
+                        style="font-size:8rem; color:#1A1B41; text-align: center; width: 100%;"></i>
+                </div>
+            </div>
+        </a>
+        
+        <a class="custom-card" href="{{url_for('covid_bp.covid')}}">
+            <div class="card" style="margin-left: 5rem;">
+                <div class="card-body">
+                    <h4>Fazer Orçamentos</h4><i class="fas fa-file-invoice-dollar"
+                        style="font-size:8rem; color:#1A1B41; text-align: center; width: 100%;"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endblock content %}
