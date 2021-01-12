@@ -17,7 +17,7 @@ services:
             context: ./celery-queue
             dockerfile: Dockerfile
         volumes:
-        - uploads-volume:/flask_app/uploads
+        - uploads-volume:/app/flask_app/uploads
         restart: always
         depends_on:
         - redis
