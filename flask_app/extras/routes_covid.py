@@ -10,11 +10,12 @@ from flask import (
 )
 import os
 import glob
+from threading import Thread
 from flask_app import app
 from flask_app.scripts import auto_recebimentos
 
 from flask_app.scripts.analyze_covid import consolidate, analyze_csv
-from flask_app.scripts.auto_worklab_chrome import auto_laudo
+from flask_app.scripts.auto_worklab_chrome import async_auto_laudo
 
 covid_bp = Blueprint("covid_bp", __name__, template_folder="templates")
 covid_table_bp = Blueprint("covid_table_bp", __name__, template_folder="templates")
@@ -63,7 +64,11 @@ def covid_result(table_file, kind):
         
         if request.method == "POST":
             table = analyze_csv(os.path.join(app.config["UPLOAD_FOLDER"], table_file))
-            auto_laudo(table, os.path.join(app.config["UPLOAD_FOLDER"], "chromedriver"))
+            try:
+                Thread(target=async_auto_laudo,args=(app,table, os.path.join(app.config["UPLOAD_FOLDER"], "chromedriver"))).start()
+                flash("Sua placa está sendo laudada no worklab, verifique lá o andamento dos laudos", "alert-success")
+            except Exception as e:
+                flash(f"Houve algum erro durante o laudo: {e}", "alert-danger")
 
         return render_template(
             "results.html",

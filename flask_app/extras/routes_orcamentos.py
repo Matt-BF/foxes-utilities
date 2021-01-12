@@ -10,7 +10,7 @@ from flask import (
 import os
 import glob
 from flask_app import app
-from .orcamentos import make_orcamento
+from flask_app.scripts.orcamentos import make_orcamento
 
 orcamentos_bp = Blueprint("orcamentos_bp", __name__, template_folder="templates")
 

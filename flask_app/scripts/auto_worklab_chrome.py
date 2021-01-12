@@ -6,9 +6,13 @@ import time
 import argparse
 import warnings
 import os
+from flask_app import app
 
 warnings.filterwarnings(action="ignore")
 
+def async_auto_laudo(app, result_table, chromedriver_path, headless=False, validate=True):
+    with app.app_context():
+        auto_laudo(result_table, chromedriver_path)
 
 def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
     INCONCLUSIVE = []
