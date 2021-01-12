@@ -1,7 +1,6 @@
 import os
 import sys
 sys.path.insert(1, "../")
-print(sys.path)
 from celery import Celery
 from flask_app.scripts.auto_worklab_chrome import auto_laudo
 from flask_app.scripts.analyze_covid import analyze_csv
