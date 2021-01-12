@@ -3,11 +3,16 @@
 
 <div class="container-fluid" style="margin-top:2rem">
     <h3>Laudar placa</h3>
-    {% if status == "PENDING" %}
+    <p>Recarregue esta página para atualizar</p>
+    {% if status == "PENDING" or status == "STARTED"%}
     <p>Status de laudo: <span style="color:blue">{{ status }}</span></p>
     {% elif  status == "SUCCESS"%}
     <p>Status de laudo: <span style="color:green">{{ status }}</span></p>
     {% else %}
     <p>Status de laudo: <span style="color:red">{{ status }}</span></p>
+    {% endif %}
+
+    {% if error %}
+    <p>{{ error }}</p>
     {% endif %}
 {% endblock content %}

@@ -90,10 +90,14 @@ def covid_result(table_file, kind):
 
 @covid_bp.route("/extras/submission_complete_<task_id>", methods=["GET"])
 def submission_complete(task_id):
-    status = celery.AsyncResult(task_id).state
+    status = celery.AsyncResult(task_id).status
+    error = None
     if status == "FAILURE":
-        celery.AsyncResult(task_id).revoke()
-    return render_template("submission.html", status=status)
+        try:
+            error = celery.AsyncResult(task_id).get()
+        except Exception as e:
+            error = e
+    return render_template("submission.html", status=status, error=error)
 
 
 @covid_bp.route("/extras/receivals", methods=["GET", "POST"])
