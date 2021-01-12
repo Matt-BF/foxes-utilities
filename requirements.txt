@@ -17,6 +17,7 @@ pytz
 readline
 redis
 setuptools
+selenium
 six
 tinycss2
 toml
