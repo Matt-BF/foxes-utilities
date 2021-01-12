@@ -1,6 +1,5 @@
 Babel
-celery==4.2.1
-flower==0.9.3
+celery
 dnspython
 docxtpl
 flask
