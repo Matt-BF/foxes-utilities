@@ -11,10 +11,10 @@ from flask import (
 import os
 import glob
 from flask_app import app
-from flask_app import auto_recebimentos
+from flask_app.scripts import auto_recebimentos
 
-from .analyze_covid import consolidate
-
+from flask_app.scripts.analyze_covid import consolidate, analyze_csv
+from flask_app.scripts.auto_worklab_chrome import auto_laudo
 
 covid_bp = Blueprint("covid_bp", __name__, template_folder="templates")
 covid_table_bp = Blueprint("covid_table_bp", __name__, template_folder="templates")
@@ -33,7 +33,7 @@ def covid():
         kind = request.form.to_dict()["plate_type"]
         # check if the post request has the file part
         if "file" not in request.files:
-            flash("No file part", "alert-danger")
+            flash("Adicione um arquivo", "alert-danger")
             return redirect(url_for("covid_bp.covid"))
         file = request.files["file"]
         # if user does not select file, browser also
@@ -52,15 +52,18 @@ def covid():
     return render_template("covid.html")
 
 
-@covid_table_bp.route("/extras/covid/<table_file>_<kind>", methods=["GET"])
+@covid_table_bp.route("/extras/covid/<table_file>_<kind>", methods=["GET", "POST"])
 def covid_result(table_file, kind):
-
     try:
         consolidated_table = consolidate(
             os.path.join(app.config["UPLOAD_FOLDER"], table_file), kind=kind
         )
         cols = consolidated_table[1]
         consolidated_table = consolidated_table[0]
+        
+        if request.method == "POST":
+            table = analyze_csv(os.path.join(app.config["UPLOAD_FOLDER"], table_file))
+            auto_laudo(table, os.path.join(app.config["UPLOAD_FOLDER"], "chromedriver"))
 
         return render_template(
             "results.html",

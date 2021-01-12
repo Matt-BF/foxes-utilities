@@ -12,6 +12,7 @@
     {% endfor %}
     {% endif %}
     {% endwith %}
+    
     <div class="row">
         <div class="col-4">
             {% for col in cols%}
@@ -19,6 +20,11 @@
                 data-column="{{loop.index}}">{{col}}</button>
             {% endfor %}
         </div>
+    </div>
+    <div class="row" style="margin-top: 1rem;">
+        <form method="POST">
+            <button class="btn btn-success" style="margin-left:0.75rem" name="laudar" type="submit">Laudar no worklab</button>
+        </form>
     </div>
     <table style="margin-top: 2rem; width:100%" class="display">
         {{ table| safe }}
