@@ -1,7 +1,7 @@
 import os
 import sys
 from celery import Celery
-from .auto_worklab_chrome import auto_laudo
+from auto_worklab_chrome import auto_laudo
 from analyze_covid import analyze_csv
 import time
 
