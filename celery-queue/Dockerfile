@@ -9,4 +9,4 @@ WORKDIR /queue
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENTRYPOINT celery -A tasks worker --loglevel=info
+ENTRYPOINT celery -A ./tasks worker --loglevel=info
