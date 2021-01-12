@@ -16,7 +16,7 @@ ENV CELERY_RESULT_BACKEND redis://redis:6379/0
 ENV C_FORCE_ROOT true
 
 # install numpy dependencies otherwise piwheels crashes
-RUN apt-get update && apt-get install -y libgfortran5 libatlas3-base cron libxslt1.1 libreoffice
+# RUN apt-get update && apt-get install -y libgfortran5 libatlas3-base cron libxslt1.1 libreoffice
 RUN export LC_ALL=en_US.UTF-8
 
 #Copy files to image and set new workdir
