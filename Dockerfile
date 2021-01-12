@@ -17,7 +17,7 @@ ENV C_FORCE_ROOT true
 
 # install chromium
 
-RUN apt-get update && apt-get install -y chromium-browser
+RUN apt-get update && apt-get install -y chromium
 RUN export LC_ALL=en_US.UTF-8
 
 #Copy files to image and set new workdir
