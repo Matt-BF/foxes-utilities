@@ -23,7 +23,7 @@ WORKDIR /app
 RUN chmod +x boot.sh
 
 # Using pip and pywheels(RPi):
-RUN python3 -m pip install --no-cache-dir -r requirements.txt --timeout 10000 --extra-index-url https://www.piwheels.org/simple
+RUN python3 -m pip install -r requirements.txt --timeout 10000 --extra-index-url https://www.piwheels.org/simple
 
 #Install Gunicorn
 RUN pip install gunicorn
