@@ -63,6 +63,7 @@ def covid_result(table_file, kind):
         consolidated_table = consolidated_table[0]
         
         if request.method == "POST":
+            table_name = os.path.join(app.config["UPLOAD_FOLDER"], table_file).split("/")[-1]
             table = analyze_csv(os.path.join(app.config["UPLOAD_FOLDER"], table_file))
             chromedriver_path = os.path.join(app.config["UPLOAD_FOLDER"], "chromedriver")
 
@@ -73,7 +74,7 @@ def covid_result(table_file, kind):
                 kwargs={},
             )
 
-                return submission_complete(table, task)
+                return submission_complete(table_name, task)
 
             except Exception as e:
                 flash(f"Houve algum erro durante o laudo: {e}", "alert-danger")
@@ -88,8 +89,8 @@ def covid_result(table_file, kind):
         flash("Sua placa está fora dos padrões, favor reveja", "alert-danger")
         return redirect(url_for("covid_bp.covid"))
 
-@covid_bp.route("/extras/submission_complete_<table>_<task>", methods=["GET","POST"])
-def submission_complete(table, task):
+@covid_bp.route("/extras/submission_complete_<table_name>_<task>", methods=["GET","POST"])
+def submission_complete(table_name, task):
     status = "STARTED"
     if request.method == "POST":
         # refresh status

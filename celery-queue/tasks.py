@@ -2,9 +2,8 @@ import os
 
 import pandas as pd
 from celery import Celery
-from ..flask_app.scripts.auto_worklab_chrome import auto_laudo
+from flask_app.scripts.auto_worklab_chrome import auto_laudo
 import time
-
 
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379')
 CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379')
