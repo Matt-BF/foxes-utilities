@@ -12,23 +12,6 @@ services:
             - 8080:3000
         restart: always
 
-    monitor:
-        build:
-            context: ./celery-queue
-            dockerfile: Dockerfile
-        environment:
-        # Flower configuration
-        - CELERY_BROKER_URL=redis://redis:6379/0
-        - FLOWER_PORT=5555
-        - FLOWER_BASIC_AUTH=user:password
-        ports:
-        - "5555:5555"
-        entrypoint: flower
-        command: -A tasks
-        restart: always
-        depends_on:
-        - worker
-
     worker:
         build:
             context: ./celery-queue
