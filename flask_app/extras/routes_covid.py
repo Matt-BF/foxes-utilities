@@ -10,15 +10,15 @@ from flask import (
 )
 import os
 import glob
-from threading import Thread
+from flask_app.worker import celery
+from celery.result import AsyncResult
+
 from flask_app import app
 from flask_app.scripts import auto_recebimentos
-
 from flask_app.scripts.analyze_covid import consolidate, analyze_csv
-from flask_app.scripts.auto_worklab_chrome import async_auto_laudo
+from flask_app.scripts.auto_worklab_chrome import auto_laudo
 
 covid_bp = Blueprint("covid_bp", __name__, template_folder="templates")
-covid_table_bp = Blueprint("covid_table_bp", __name__, template_folder="templates")
 
 
 @covid_bp.route("/extras/covid", methods=["GET", "POST"])
@@ -47,13 +47,13 @@ def covid():
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
             return redirect(
-                url_for("covid_table_bp.covid_result", table_file=filename, kind=kind)
+                url_for("covid_bp.covid_result", table_file=filename, kind=kind)
             )
 
     return render_template("covid.html")
 
 
-@covid_table_bp.route("/extras/covid/<table_file>_<kind>", methods=["GET", "POST"])
+@covid_bp.route("/extras/covid/<table_file>_<kind>", methods=["GET", "POST"])
 def covid_result(table_file, kind):
     try:
         consolidated_table = consolidate(
@@ -64,9 +64,17 @@ def covid_result(table_file, kind):
         
         if request.method == "POST":
             table = analyze_csv(os.path.join(app.config["UPLOAD_FOLDER"], table_file))
+            chromedriver_path = os.path.join(app.config["UPLOAD_FOLDER"], "chromedriver")
+
             try:
-                Thread(target=async_auto_laudo,args=(app,table, os.path.join(app.config["UPLOAD_FOLDER"], "chromedriver"))).start()
-                flash("Sua placa está sendo laudada no worklab, verifique lá o andamento dos laudos", "alert-success")
+                # Start a Celery task and send user to the results page
+                task = celery.send_task('tasks.start_auto_laudo',
+                args=[table, chromedriver_path],
+                kwargs={},
+            )
+
+                return submission_complete(table, task)
+
             except Exception as e:
                 flash(f"Houve algum erro durante o laudo: {e}", "alert-danger")
 
@@ -79,6 +87,14 @@ def covid_result(table_file, kind):
     except Exception:
         flash("Sua placa está fora dos padrões, favor reveja", "alert-danger")
         return redirect(url_for("covid_bp.covid"))
+
+@covid_bp.route("/extras/submission_complete_<table>_<task>", methods=["GET","POST"])
+def submission_complete(table, task):
+    status = "STARTED"
+    if request.method == "POST":
+        # refresh status
+        status = AsyncResult(task.id)
+    return render_template('submission.html', table=table, status=status)
 
 @covid_bp.route("/extras/receivals", methods=["GET","POST"])
 def receivals():

@@ -7,12 +7,9 @@ import argparse
 import warnings
 import os
 from flask_app import app
+from flask_app.scripts.analyze_covid import analyze_csv
 
 warnings.filterwarnings(action="ignore")
-
-def async_auto_laudo(app, result_table, chromedriver_path, headless=False, validate=True):
-    with app.app_context():
-        auto_laudo(result_table, chromedriver_path)
 
 def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
     INCONCLUSIVE = []
@@ -98,27 +95,3 @@ def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
     driver.quit()
 
     print(INCONCLUSIVE, len(INCONCLUSIVE) - 2)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("plate_file", help="Arquivo csv do programa CFX Maestro")
-    parser.add_argument(
-        "--validate",
-        default="True",
-        help="Conferir os resultados automaticamente. Default=True",
-    )
-    args = parser.parse_args()
-
-    start = time.time()
-
-    print("PREPARANDO A PLACA", "\n")
-    table = analyze_csv(args.plate_file)
-    print("LAUDANDO AMOSTRAS", "\n")
-    try:
-        auto_laudo(table, headless=False, validate=args.validate)
-
-    except Exception:
-        auto_laudo(table, headless=True, validate=args.validate)
-
-    print(f"Executado em {round(time.time()-start)} segundos")

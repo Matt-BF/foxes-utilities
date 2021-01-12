@@ -7,11 +7,10 @@ app.config["UPLOAD_FOLDER"] = os.path.join(os.getcwd(), "flask_app/uploads")
 
 
 # extras blueprints
-from flask_app.extras.routes_covid import covid_bp, covid_table_bp
+from flask_app.extras.routes_covid import covid_bp
 from flask_app.extras.routes_orcamentos import orcamentos_bp
 
 app.register_blueprint(covid_bp)
-app.register_blueprint(covid_table_bp)
 app.register_blueprint(orcamentos_bp)
 
 from flask_app import routes

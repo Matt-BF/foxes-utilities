@@ -8,7 +8,12 @@ FROM python:3.7-buster
 # If you prefer miniconda:
 # FROM continuumio/miniconda3
 
-LABEL Name=foxes-dashboard Version=0.5
+LABEL Name=foxes-utilities Version=1
+
+
+ENV CELERY_BROKER_URL redis://redis:6379/0
+ENV CELERY_RESULT_BACKEND redis://redis:6379/0
+ENV C_FORCE_ROOT true
 
 # install numpy dependencies otherwise piwheels crashes
 RUN apt-get update && apt-get install -y libgfortran5 libatlas3-base cron libxslt1.1 libreoffice

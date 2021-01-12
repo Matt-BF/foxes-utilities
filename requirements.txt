@@ -1,3 +1,5 @@
+Babel
+celery
 dnspython
 docxtpl
 flask
@@ -13,6 +15,7 @@ pycparser
 pyopenssl
 pytz
 readline
+redis
 setuptools
 six
 tinycss2

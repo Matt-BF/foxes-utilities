@@ -1,0 +1,12 @@
+amqp
+Babel
+billiard
+celery
+flower
+kombu
+pytz
+redis
+tornado
+vine
+numpy==1.19.0
+pandas
