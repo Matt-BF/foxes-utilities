@@ -14,7 +14,7 @@ services:
 
     monitor:
         build:
-            context: celery-queue
+            context: ./celery-queue
             dockerfile: Dockerfile
         environment:
         # Flower configuration
@@ -31,7 +31,7 @@ services:
 
     worker:
         build:
-            context: celery-queue
+            context: ./celery-queue
             dockerfile: Dockerfile
         volumes:
         - uploads-volume:/flask_app/uploads
