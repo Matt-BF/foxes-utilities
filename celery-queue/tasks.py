@@ -2,8 +2,9 @@ import os
 import sys
 sys.path.insert(1, "../")
 from celery import Celery
-from flask_app.scripts.auto_worklab_chrome import auto_laudo
-from flask_app.scripts.analyze_covid import analyze_csv
+print(sys.path())
+from ..flask_app.scripts.auto_worklab_chrome import auto_laudo
+from ..flask_app.scripts.analyze_covid import analyze_csv
 import time
 
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379')
