@@ -62,10 +62,8 @@ def covid_result(table_file, kind):
         consolidated_table = consolidated_table[0]
 
         if request.method == "POST":
-            table_name = os.path.join(app.config["UPLOAD_FOLDER"], table_file).split(
-                "/"
-            )[-1]
-            table = analyze_csv(os.path.join(app.config["UPLOAD_FOLDER"], table_file))
+            table_name = os.path.join(app.config["UPLOAD_FOLDER"], table_file)
+
             chromedriver_path = os.path.join(
                 app.config["UPLOAD_FOLDER"], "chromedriver"
             )
@@ -93,6 +91,8 @@ def covid_result(table_file, kind):
 @covid_bp.route("/extras/submission_complete_<task_id>", methods=["GET"])
 def submission_complete(task_id):
     status = celery.AsyncResult(task_id).state
+    if status == "FAILURE":
+        celery.AsyncResult(task_id).revoke()
     return render_template("submission.html", status=status)
 
 
