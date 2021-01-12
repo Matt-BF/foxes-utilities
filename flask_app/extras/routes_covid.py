@@ -11,7 +11,6 @@ from flask import (
 import os
 import glob
 from flask_app.worker import celery
-from celery.result import AsyncResult
 
 from flask_app import app
 from flask_app.scripts import auto_recebimentos
@@ -61,23 +60,24 @@ def covid_result(table_file, kind):
         )
         cols = consolidated_table[1]
         consolidated_table = consolidated_table[0]
-        
-        if request.method == "POST":
-            table_name = os.path.join(app.config["UPLOAD_FOLDER"], table_file).split("/")[-1]
-            table = analyze_csv(os.path.join(app.config["UPLOAD_FOLDER"], table_file))
-            chromedriver_path = os.path.join(app.config["UPLOAD_FOLDER"], "chromedriver")
 
-            try:
-                # Start a Celery task and send user to the results page
-                task = celery.send_task('tasks.start_auto_laudo',
+        if request.method == "POST":
+            table_name = os.path.join(app.config["UPLOAD_FOLDER"], table_file).split(
+                "/"
+            )[-1]
+            table = analyze_csv(os.path.join(app.config["UPLOAD_FOLDER"], table_file))
+            chromedriver_path = os.path.join(
+                app.config["UPLOAD_FOLDER"], "chromedriver"
+            )
+
+            # Start a Celery task and send user to the results page
+            task = celery.send_task(
+                "tasks.start_auto_laudo",
                 args=[table_name, chromedriver_path],
                 kwargs={},
             )
 
-                return submission_complete(table_name, task)
-
-            except Exception as e:
-                flash(f"Houve algum erro durante o laudo: {e}", "alert-danger")
+            return redirect(url_for("covid_bp.submission_complete", task_id=task.id))
 
         return render_template(
             "results.html",
@@ -89,17 +89,18 @@ def covid_result(table_file, kind):
         flash("Sua placa está fora dos padrões, favor reveja", "alert-danger")
         return redirect(url_for("covid_bp.covid"))
 
-@covid_bp.route("/extras/submission_complete_<table_name>_<task>", methods=["GET","POST"])
-def submission_complete(table_name, task):
-    status = "STARTED"
-    if request.method == "POST":
-        # refresh status
-        status = AsyncResult(task.id)
-    return render_template('submission.html', table=table, status=status)
 
-@covid_bp.route("/extras/receivals", methods=["GET","POST"])
+@covid_bp.route("/extras/submission_complete_<task_id>", methods=["GET"])
+def submission_complete(task_id):
+    status = celery.AsyncResult(task_id).state
+    return render_template("submission.html", status=status)
+
+
+@covid_bp.route("/extras/receivals", methods=["GET", "POST"])
 def receivals():
-    pngs = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.png") + glob.glob(app.config["UPLOAD_FOLDER"] + "/*.zip")
+    pngs = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.png") + glob.glob(
+        app.config["UPLOAD_FOLDER"] + "/*.zip"
+    )
     for png in pngs:
         try:
             os.remove(png)
@@ -112,11 +113,13 @@ def receivals():
             date = "".join(form_data["data"].split("-")[::-1][0:2])
             auto_recebimentos.fetch_receivals(form_data["planilha"], date)
             auto_recebimentos.zip_pngs(date)
-            return(send_from_directory(app.config["UPLOAD_FOLDER"], f"{date}.zip", as_attachment=True))
+            return send_from_directory(
+                app.config["UPLOAD_FOLDER"], f"{date}.zip", as_attachment=True
+            )
 
         except Exception as e:
             print(e)
             flash(f"Erro: {e}", "alert-danger")
-            return(redirect(url_for("covid_bp.receivals")))
+            return redirect(url_for("covid_bp.receivals"))
 
     return render_template("receivals.html")

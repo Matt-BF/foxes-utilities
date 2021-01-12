@@ -2,7 +2,12 @@
 {% block content %}
 
 <div class="container-fluid" style="margin-top:2rem">
-    <h3>Laudar placa {{ table }}</h3>
-
-    <p>Status de laudo: {{ status }}</p>
+    <h3>Laudar placa</h3>
+    {% if status == "PENDING" %}
+    <p>Status de laudo: <span style="color:yellow">{{ status }}</span></p>
+    {% elif  status == "SUCCESS"%}
+    <p>Status de laudo: <span style="color:yellow">{{ status }}</span></p>
+    {% else %}
+    <p>Status de laudo: <span style="color:red">{{ status }}</span></p>
+    {% endif %}
 {% endblock content %}

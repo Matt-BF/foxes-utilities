@@ -13,9 +13,8 @@ CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localho
 
 celery = Celery('tasks', broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND)
 
-
 @celery.task(bind=True)
-def start_auto_laudo(result_table, chromedriver_path):
+def start_auto_laudo(self,result_table, chromedriver_path):
     time.sleep(60)
     return "Done"
     #auto_laudo(result_table, chromedriver_path, headless=False, validate=True)
