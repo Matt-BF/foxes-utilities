@@ -1,8 +1,8 @@
 amqp
 Babel
 billiard
-celery
-flower
+celery==4.2.1
+flower==0.9.3
 kombu
 pytz
 redis
@@ -10,3 +10,4 @@ tornado
 vine
 numpy==1.19.0
 pandas
+selenium
