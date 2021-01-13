@@ -10,6 +10,8 @@ services:
             - FOXES_PASSWORD=${FOXES_PASSWORD}
         ports:
             - 8080:3000
+        volumes:
+            - uploads-volume:/app/flask_app/uploads
         restart: always
 
     worker:
@@ -17,14 +19,14 @@ services:
             context: ./celery-queue
             dockerfile: Dockerfile
         volumes:
-        - uploads-volume:/app/flask_app/uploads
+            - uploads-volume:/app/flask_app/uploads
         restart: always
         depends_on:
-        - redis
+            - redis
     redis:
         image: redis:5.0-alpine
         volumes:
-        - redis-volume:/data
+            - redis-volume:/data
         restart: always
 
 volumes:
