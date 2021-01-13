@@ -27,8 +27,9 @@ RUN  export VERSION=`google-chrome --version | awk -F " " '{print $3}'| awk -F "
 
 RUN apt-get install -yqq unzip
 
+RUN export VERSION=`curl -sS https://chromedriver.storage.googleapis.com/chromedriver.storage.googleapis.com/LATEST_RELEASE_`$VERSION
 # Download the Chrome Driver
-RUN wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/`curl -sS https://chromedriver.storage.googleapis.com/chromedriver.storage.googleapis.com/LATEST_RELEASE_`$VERSION/chromedriver_linux64.zip
+RUN wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$VERSION/chromedriver_linux64.zip
 
 # Unzip the Chrome Driver into /usr/local/bin directory
 
