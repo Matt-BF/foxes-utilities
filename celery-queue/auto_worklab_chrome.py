@@ -10,7 +10,7 @@ from analyze_covid import analyze_csv
 
 warnings.filterwarnings(action="ignore")
 
-def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
+def auto_laudo(result_table, chromedriver_path, headless=True, validate=True):
     INCONCLUSIVE = []
     options = Options()
     options.headless = headless
