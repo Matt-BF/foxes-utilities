@@ -13,7 +13,12 @@ def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
-    driver = webdriver.Chrome(executable_path=chromedriver_path)
+    options.add_argument("--disable-dev-shm-usage")
+    chrome_prefs = {}
+    options.experimental_options["prefs"] = chrome_prefs
+    chrome_prefs["profile.default_content_settings"] = {"images": 2}
+    
+    driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
 
     driver.get("https://app.worklabweb.com.br/index.php")
 
