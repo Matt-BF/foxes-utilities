@@ -14,4 +14,4 @@ celery = Celery('tasks', broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND
 @celery.task(bind=True)
 def start_auto_laudo(self,table_name, chromedriver_path):
     table = analyze_csv(table_name)
-    auto_laudo(table, chromedriver_path, headless=False, validate=True)
+    auto_laudo(table, chromedriver_path, validate=True)
