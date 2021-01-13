@@ -95,12 +95,9 @@ def fetch_receivals(sheet_name, date):
 def zip_pngs(date):
     with zipfile.ZipFile(os.path.join(app.config["UPLOAD_FOLDER"],f"{date}.zip"), "w") as zip:
         for png in glob.glob(os.path.join(app.config["UPLOAD_FOLDER"],f"{date}*.png")):
-            zip.write(png)
+            zip.write(png, os.path.basename(png))
 
 def zip_pdfs():
     with zipfile.ZipFile(os.path.join(app.config["UPLOAD_FOLDER"],f"laudos.zip"), "w") as zip:
-        with open(os.path.join(app.config["UPLOAD_FOLDER"],"laudos.txt"), "w") as f:
-            for pdf in glob.glob(os.path.join(app.config["UPLOAD_FOLDER"],"*.pdf")):
-                f.write(pdf)
-                zip.write(pdf)
-    os.remove(os.path.join(app.config["UPLOAD_FOLDER"],"laudos.txt"))
+        for pdf in glob.glob(os.path.join(app.config["UPLOAD_FOLDER"],"*.pdf")):
+            zip.write(pdf, os.path.basename(pdf))
