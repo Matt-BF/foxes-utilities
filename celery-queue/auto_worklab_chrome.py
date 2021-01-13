@@ -11,8 +11,8 @@ warnings.filterwarnings(action="ignore")
 def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
     INCONCLUSIVE = []
     options = Options()
-    options.headless = headless
-
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
     driver = webdriver.Chrome(executable_path=chromedriver_path)
 
     driver.get("https://app.worklabweb.com.br/index.php")
