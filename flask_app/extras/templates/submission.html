@@ -6,13 +6,15 @@
     <p>Recarregue esta página para atualizar</p>
     {% if status == "PENDING" or status == "STARTED"%}
     <p>Status de laudo: <span style="color:blue">{{ status }}</span></p>
+    <p>Favor acompanhe os laudos no worklab</p>
     {% elif  status == "SUCCESS"%}
     <p>Status de laudo: <span style="color:green">{{ status }}</span></p>
+    <p>Todos os laudos foram liberados!</p>
     {% else %}
     <p>Status de laudo: <span style="color:red">{{ status }}</span></p>
     {% endif %}
 
     {% if error %}
-    <p>{{ error }}</p>
+    <p>Erro: {{ error }}</p>
     {% endif %}
 {% endblock content %}

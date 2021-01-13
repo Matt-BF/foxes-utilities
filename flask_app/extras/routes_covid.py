@@ -13,9 +13,10 @@ import glob
 from flask_app.worker import celery
 
 from flask_app import app
-from flask_app.scripts import auto_recebimentos
+from flask_app.scripts.auto_recebimentos import fetch_receivals, zip_pdfs, zip_pngs
 from flask_app.scripts.analyze_covid import consolidate, analyze_csv
 from flask_app.scripts.auto_worklab_chrome import auto_laudo
+from flask_app.scripts.pdf_extract import separate_laudos
 
 covid_bp = Blueprint("covid_bp", __name__, template_folder="templates")
 
@@ -64,9 +65,6 @@ def covid_result(table_file, kind):
         if request.method == "POST":
             table_name = os.path.join(app.config["UPLOAD_FOLDER"], table_file)
 
-            #chromedriver_path = os.path.join(
-            #    app.config["UPLOAD_FOLDER"], "chromedriver"
-            #)
 
             # Start a Celery task and send user to the results page
             task = celery.send_task(
@@ -115,8 +113,8 @@ def receivals():
         try:
             form_data = request.form.to_dict()
             date = "".join(form_data["data"].split("-")[::-1][0:2])
-            auto_recebimentos.fetch_receivals(form_data["planilha"], date)
-            auto_recebimentos.zip_pngs(date)
+            fetch_receivals(form_data["planilha"], date)
+            zip_pngs(date)
             return send_from_directory(
                 app.config["UPLOAD_FOLDER"], f"{date}.zip", as_attachment=True
             )
@@ -127,3 +125,51 @@ def receivals():
             return redirect(url_for("covid_bp.receivals"))
 
     return render_template("receivals.html")
+
+
+@covid_bp.route("/extras/pdf_extract", methods=["GET","POST"])
+def pdf_route():
+    pdfs = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.pdf")
+    for pdf in pdfs:
+        try:
+            os.remove(pdf)
+        except FileNotFoundError:
+            pass
+    try:
+        os.remove(app.config["UPLOAD_FOLDER"] + "/laudos.zip")
+    except FileNotFoundError:
+        pass
+
+    if request.method == "POST":
+        # check if the post request has the file part
+        if "file" not in request.files:
+            flash("Adicione um arquivo", "alert-danger")
+            return redirect(url_for("covid_bp.pdf_route"))
+        file = request.files["file"]
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == "":
+            flash("No selected file", "alert-danger")
+            return redirect(url_for("covid_bp.pdf_route"))
+        
+        if "pdf" not in file.filename:
+            flash("Adicione um arquivo pdf", "alert-danger")
+            return redirect(url_for("covid_bp.pdf_route"))
+
+        if file and "pdf" in file.filename:
+            filename = file.filename
+            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+
+            try:
+                separate_laudos(file_path)
+                os.remove(file_path)
+                zip_pdfs()
+                return send_from_directory(
+                        app.config["UPLOAD_FOLDER"], "laudos.zip", as_attachment=True
+                    )
+            except Exception as e:
+                flash(f"Há algo de errado com o seu PDF: {e}", "alert-danger")
+
+
+    return render_template("pdf_divide.html")
