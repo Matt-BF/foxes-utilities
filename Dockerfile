@@ -28,7 +28,7 @@ RUN apt-get install -yqq unzip
 
 # Download the Chrome Driver
 
-RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`
+RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/
 
 RUN curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE/chromedriver_linux64.zip
 
