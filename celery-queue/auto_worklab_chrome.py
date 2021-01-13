@@ -6,17 +6,15 @@ import time
 import argparse
 import warnings
 import os
-from analyze_covid import analyze_csv
-import chromedriver_binary
-
+from flask_app.scripts.analyze_covid import analyze_csv
 warnings.filterwarnings(action="ignore")
 
-def auto_laudo(result_table, headless=True, validate=True):
+def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
     INCONCLUSIVE = []
     options = Options()
     options.headless = headless
 
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(executable_path=chromedriver_path)
 
     driver.get("https://app.worklabweb.com.br/index.php")
 
