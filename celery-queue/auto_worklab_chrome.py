@@ -6,7 +6,6 @@ import time
 import argparse
 import warnings
 import os
-from flask_app.scripts.analyze_covid import analyze_csv
 warnings.filterwarnings(action="ignore")
 
 def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
