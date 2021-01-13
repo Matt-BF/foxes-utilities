@@ -24,7 +24,7 @@ RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
 
 
 # Download the Chrome Driver
-RUN  export VERSION=`google-chrome --version | awk -F " " '{print $3}'| awk -F "." '{print $1 "." $2 "." $3}'` && export FULLVERSION=`curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$VERSION` && RUN wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$FULLVERSION/chromedriver_linux64.zip
+RUN  export VERSION=`google-chrome --version | awk -F " " '{print $3}'| awk -F "." '{print $1 "." $2 "." $3}'` && export FULLVERSION=`curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$VERSION` && wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$FULLVERSION/chromedriver_linux64.zip
 # Installing Unzip
 
 RUN apt-get install -yqq unzip
