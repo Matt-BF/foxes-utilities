@@ -33,9 +33,6 @@ ADD . /app
 #set new workdir
 WORKDIR /app
 
-# Unzip the Chrome Driver into uploads directory
-
-RUN unzip /tmp/chromedriver.zip chromedriver -d /app/flask_app/bin/
 
 # make gunicorn boot executable
 RUN chmod +x boot.sh
