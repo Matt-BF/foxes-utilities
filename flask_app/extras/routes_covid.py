@@ -71,7 +71,7 @@ def covid_result(table_file, kind):
             # Start a Celery task and send user to the results page
             task = celery.send_task(
                 "tasks.start_auto_laudo",
-                args=[table_name, chromedriver_path],
+                args=[table_name],
                 kwargs={},
             )
 
