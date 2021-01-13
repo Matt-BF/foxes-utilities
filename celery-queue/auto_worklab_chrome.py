@@ -7,6 +7,7 @@ import argparse
 import warnings
 import os
 from analyze_covid import analyze_csv
+import chromedriver_binary
 
 warnings.filterwarnings(action="ignore")
 
