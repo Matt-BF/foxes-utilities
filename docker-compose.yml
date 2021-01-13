@@ -23,6 +23,14 @@ services:
         restart: always
         depends_on:
             - redis
+
+    selenium:
+        image: selenium/standalone-chrome
+        ports:
+            - 4444:4444
+        volumes:
+            - uploads-volume:/app/flask_app/uploads
+
     redis:
         image: redis:5.0-alpine
         volumes:
