@@ -29,11 +29,6 @@ RUN  export VERSION=`google-chrome --version | awk -F " " '{print $3}'| awk -F "
 
 RUN apt-get install -yqq unzip
 
-
-# Unzip the Chrome Driver into /usr/local/bin directory
-
-RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
-
 # Set display port as an environment variable
 
 ENV DISPLAY=:99
@@ -44,6 +39,10 @@ RUN export LC_ALL=en_US.UTF-8
 ADD . /app
 #set new workdir
 WORKDIR /app
+
+# Unzip the Chrome Driver into uploads directory
+
+RUN unzip /tmp/chromedriver.zip chromedriver -d /app/flask_app/uploads/
 
 # make gunicorn boot executable
 RUN chmod +x boot.sh
