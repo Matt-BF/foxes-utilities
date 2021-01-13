@@ -22,15 +22,16 @@ RUN apt-get install -y gconf-service libasound2 libatk1.0-0 libcairo2 libcups2 l
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
 
+RUN VERSION=google-chrome --version
+RUN export VERSION=${VERSION}
+
 # Installing Unzip
 
 RUN apt-get install -yqq unzip
 
 # Download the Chrome Driver
 
-RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/
-
-RUN curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE/chromedriver_linux64.zip
+RUN wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/index.html?path=${VERSION}/
 
 # Unzip the Chrome Driver into /usr/local/bin directory
 
