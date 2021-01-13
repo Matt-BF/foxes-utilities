@@ -10,4 +10,3 @@ vine
 numpy==1.19.0
 pandas
 selenium
-chromedriver-binary

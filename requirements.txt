@@ -25,4 +25,3 @@ traitlets
 urllib3
 werkzeug
 wheel
-chromedriver-binary
