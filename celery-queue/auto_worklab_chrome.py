@@ -2,13 +2,14 @@ import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 import argparse
 import warnings
 import os
 warnings.filterwarnings(action="ignore")
 
-def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
+def auto_laudo(result_table, validate=True):
     INCONCLUSIVE = []
     options = Options()
     options.add_argument("--headless")
@@ -18,7 +19,7 @@ def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
     options.experimental_options["prefs"] = chrome_prefs
     chrome_prefs["profile.default_content_settings"] = {"images": 2}
     
-    driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
+    driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=options)
 
     driver.get("https://app.worklabweb.com.br/index.php")
 

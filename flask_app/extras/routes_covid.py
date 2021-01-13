@@ -64,14 +64,14 @@ def covid_result(table_file, kind):
         if request.method == "POST":
             table_name = os.path.join(app.config["UPLOAD_FOLDER"], table_file)
 
-            chromedriver_path = os.path.join(
-                app.config["UPLOAD_FOLDER"], "chromedriver"
-            )
+            #chromedriver_path = os.path.join(
+            #    app.config["UPLOAD_FOLDER"], "chromedriver"
+            #)
 
             # Start a Celery task and send user to the results page
             task = celery.send_task(
                 "tasks.start_auto_laudo",
-                args=[table_name, chromedriver_path],
+                args=[table_name],
                 kwargs={},
             )
 
