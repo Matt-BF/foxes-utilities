@@ -22,6 +22,8 @@ RUN apt-get install -y gconf-service libasound2 libatk1.0-0 libcairo2 libcups2 l
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
 
+RUN google-chrome --version
+
 RUN export LC_ALL=en_US.UTF-8
 
 #Copy files to image and set new workdir
