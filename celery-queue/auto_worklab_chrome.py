@@ -10,12 +10,12 @@ from analyze_covid import analyze_csv
 
 warnings.filterwarnings(action="ignore")
 
-def auto_laudo(result_table, chromedriver_path, headless=True, validate=True):
+def auto_laudo(result_table, headless=True, validate=True):
     INCONCLUSIVE = []
     options = Options()
     options.headless = headless
 
-    driver = webdriver.Chrome(executable_path=chromedriver_path)
+    driver = webdriver.Chrome()
 
     driver.get("https://app.worklabweb.com.br/index.php")
 
