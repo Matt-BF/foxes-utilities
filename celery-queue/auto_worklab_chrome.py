@@ -42,7 +42,8 @@ def auto_laudo(result_table, validate=True):
     driver.find_element_by_xpath(
         "/html/body/form/div/div[1]/div[3]/div[2]/div/a[1]/img"
     ).click()  # tela de insercao de resultados
-
+    
+    print("\n", "INSERINDO LAUDOS", "\n")
     # estou na tela de insercao de resultados
     for code in result_table.index:
         if result_table.loc[code, "Result"] != "INCONCLUSIVO" and code.isdigit():
