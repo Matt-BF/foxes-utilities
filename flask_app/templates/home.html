@@ -40,9 +40,18 @@
                 </div>
             </div>
         </a>
-
+    </div>
+    <div class="row" style="margin-top:3rem; margin-left:3rem">
+        <a class="custom-card" href="{{url_for('covid_bp.notify')}}">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Notificar Vigilância</h4><i class="fas fa-bullhorn"
+                        style="font-size:8rem; color:#1A1B41; text-align: center; width: 100%;"></i>
+                </div>
+            </div>
+        </a>
         <a class="custom-card" href="{{url_for('orcamentos_bp.orcamentos')}}">
-            <div class="card" style="margin-left: 5rem;">
+            <div class="card" style="margin-left:5rem">
                 <div class="card-body">
                     <h4>Fazer Orçamentos</h4><i class="fas fa-file-invoice-dollar"
                         style="font-size:8rem; color:#1A1B41; text-align: center; width: 100%;"></i>
@@ -50,4 +59,5 @@
             </div>
         </a>
     </div>
+    
     {% endblock content %}

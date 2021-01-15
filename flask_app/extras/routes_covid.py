@@ -17,6 +17,7 @@ from flask_app.scripts.auto_recebimentos import fetch_receivals, zip_pdfs, zip_p
 from flask_app.scripts.analyze_covid import consolidate, analyze_csv
 from flask_app.scripts.auto_worklab_chrome import auto_laudo
 from flask_app.scripts.pdf_extract import separate_laudos
+from flask_app.scripts.notifica import parse_day_runs, compare_day_laudos, send_mail
 
 covid_bp = Blueprint("covid_bp", __name__, template_folder="templates")
 
@@ -126,6 +127,23 @@ def receivals():
 
     return render_template("receivals.html")
 
+@covid_bp.route("/extras/notify", methods=["GET", "POST"])
+def notify():
+    if request.method == "POST":
+        try:
+            form_data = request.form.to_dict()
+            date = "".join(form_data["data"].split("-")[::-1][0:2])
+            nums = parse_day_runs(form_data["planilha"], date)
+            laudos = compare_day_laudos(form_data["worklab_table"], nums)
+            flash("Email enviado para a vigilância", "alert-success")
+            return send_mail(laudos, form_data["data"])
+            
+
+        except Exception as e:
+            flash(f"Erro: {e}", "alert-danger")
+            return redirect(url_for("covid_bp.notify"))
+
+    return render_template("notify.html")
 
 @covid_bp.route("/extras/pdf_extract", methods=["GET","POST"])
 def pdf_route():
