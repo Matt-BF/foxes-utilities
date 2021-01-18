@@ -4,6 +4,7 @@ from flask import (
     url_for,
     flash,
     send_from_directory,
+    send_file,
     request,
     redirect,
     after_this_request,
@@ -199,7 +200,7 @@ def submission_complete(task_id):
 @covid_bp.route("/extras/pngs", methods=["GET"])
 def pngs_download(link):
     try:
-        return send_from_directory(
+        return send_file(
             link, as_attachment=True
         )
     
