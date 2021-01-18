@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container-fluid" style="margin-top:2rem">
+    <h3>Baixar recebimentos</h3>
+    <p>Recarregue esta página para atualizar</p>
+    {% if status == "PENDING" or status == "STARTED"%}
+    <p>Status de imagens: <span style="color:blue">{{ status }}</span></p>
+    {% elif  status == "SUCCESS"%}
+    <p>Status de imagens: <span style="color:green">{{ status }}</span></p>
+    <p>Imagens criadas, recarregue a página para baixar!</p>
+    {% else %}
+    <p>Status de laudo: <span style="color:red">{{ status }}</span></p>
+    {% endif %}
+
+    {% if error %}
+    <p>Erro: {{ error }}</p>
+    {% endif %}
+{% endblock content %}

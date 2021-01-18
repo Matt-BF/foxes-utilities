@@ -66,12 +66,9 @@ def covid_result(table_file, kind):
         if request.method == "POST":
             table_name = os.path.join(app.config["UPLOAD_FOLDER"], table_file)
 
-
             # Start a Celery task and send user to the results page
             task = celery.send_task(
-                "tasks.start_auto_laudo",
-                args=[table_name],
-                kwargs={},
+                "tasks.start_auto_laudo", args=[table_name], kwargs={},
             )
 
             return redirect(url_for("covid_bp.submission_complete", task_id=task.id))
@@ -85,18 +82,6 @@ def covid_result(table_file, kind):
     except Exception:
         flash("Sua placa está fora dos padrões, favor reveja", "alert-danger")
         return redirect(url_for("covid_bp.covid"))
-
-
-@covid_bp.route("/extras/submission_complete_<task_id>", methods=["GET"])
-def submission_complete(task_id):
-    status = celery.AsyncResult(task_id).status
-    error = None
-    if status == "FAILURE":
-        try:
-            error = celery.AsyncResult(task_id).get()
-        except Exception as e:
-            error = e
-    return render_template("submission.html", status=status, error=error)
 
 
 @covid_bp.route("/extras/receivals", methods=["GET", "POST"])
@@ -114,10 +99,14 @@ def receivals():
         try:
             form_data = request.form.to_dict()
             date = "".join(form_data["data"].split("-")[::-1][0:2])
-            fetch_receivals(form_data["planilha"], date)
-            zip_pngs(date)
-            return send_from_directory(
-                app.config["UPLOAD_FOLDER"], f"{date}.zip", as_attachment=True
+            task = celery.send_task(
+                "tasks.start_fetch_receivals",
+                args=[form_data["planilha"], date],
+                kwargs={},
+            )
+
+            return redirect(
+                url_for("covid_bp.submission_complete", task_id=task.id, date=date)
             )
 
         except Exception as e:
@@ -126,6 +115,7 @@ def receivals():
             return redirect(url_for("covid_bp.receivals"))
 
     return render_template("receivals.html")
+
 
 @covid_bp.route("/extras/notify", methods=["GET", "POST"])
 def notify():
@@ -137,7 +127,6 @@ def notify():
             laudos = compare_day_laudos(form_data["worklab_table"], nums)
             flash("Email enviado para a vigilância", "alert-success")
             return send_mail(laudos, form_data["data"])
-            
 
         except Exception as e:
             flash(f"Erro: {e}", "alert-danger")
@@ -145,7 +134,8 @@ def notify():
 
     return render_template("notify.html")
 
-@covid_bp.route("/extras/pdf_extract", methods=["GET","POST"])
+
+@covid_bp.route("/extras/pdf_extract", methods=["GET", "POST"])
 def pdf_route():
     pdfs = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.pdf")
     for pdf in pdfs:
@@ -169,7 +159,7 @@ def pdf_route():
         if file.filename == "":
             flash("No selected file", "alert-danger")
             return redirect(url_for("covid_bp.pdf_route"))
-        
+
         if "pdf" not in file.filename:
             flash("Adicione um arquivo pdf", "alert-danger")
             return redirect(url_for("covid_bp.pdf_route"))
@@ -184,10 +174,38 @@ def pdf_route():
                 os.remove(file_path)
                 zip_pdfs()
                 return send_from_directory(
-                        app.config["UPLOAD_FOLDER"], "laudos.zip", as_attachment=True
-                    )
+                    app.config["UPLOAD_FOLDER"], "laudos.zip", as_attachment=True
+                )
             except Exception as e:
                 flash(f"Há algo de errado com o seu PDF: {e}", "alert-danger")
 
-
     return render_template("pdf_divide.html")
+
+
+## celery views after submission
+@covid_bp.route("/extras/submission_complete_<task_id>", methods=["GET"])
+def submission_complete(task_id):
+    status = celery.AsyncResult(task_id).status
+    error = None
+    if status == "FAILURE":
+        try:
+            error = celery.AsyncResult(task_id).get()
+        except Exception as e:
+            error = e
+
+    return render_template("submission.html", status=status, error=error)
+
+@covid_bp.route("/extras/pngs_<task_id>_<date>", methods=["GET"])
+def pngs_download(task_id, date):
+    status = celery.AsyncResult(task_id).status
+    error = None
+    if status == "SUCCESS":
+        try:
+            return send_from_directory(
+                app.config["UPLOAD_FOLDER"], f"{date}.zip", as_attachment=True
+            )
+        except Exception as e:
+            flash(f"Erro: {e}", "alert-danger")
+            return redirect(url_for("covid_bp.receivals"))
+
+    return render_template("png_download", status=status, error=error)
