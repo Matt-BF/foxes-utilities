@@ -111,7 +111,6 @@ def receivals():
             )
 
         except Exception as e:
-            print(e)
             flash(f"Erro: {e}", "alert-danger")
             return redirect(url_for("covid_bp.receivals"))
 
