@@ -107,7 +107,7 @@ def receivals():
             )
 
             return redirect(
-                url_for("covid_bp.pngs_download", link)
+                url_for("covid_bp.pngs_download", task)
             )
 
         except Exception as e:
@@ -200,7 +200,7 @@ def submission_complete(task_id):
 def pngs_download(link):
     try:
         return send_from_directory(
-            app.config["UPLOAD_FOLDER"], f"{date}.zip", as_attachment=True
+            link, as_attachment=True
         )
     
     except Exception as e:
