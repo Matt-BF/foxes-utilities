@@ -13,7 +13,7 @@ import glob
 from flask_app.worker import celery
 
 from flask_app import app
-from flask_app.scripts.auto_recebimentos import fetch_receivals, zip_pdfs, zip_pngs
+from flask_app.scripts.auto_recebimentos import zip_pdfs
 from flask_app.scripts.analyze_covid import consolidate, analyze_csv
 from flask_app.scripts.auto_worklab_chrome import auto_laudo
 from flask_app.scripts.pdf_extract import separate_laudos
