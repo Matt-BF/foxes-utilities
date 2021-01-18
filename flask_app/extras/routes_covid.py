@@ -200,13 +200,8 @@ def png_download(task_id, date):
     status = celery.AsyncResult(task_id).status
     error = None
     if status == "SUCCESS":
-        try:
-            return send_from_directory(
-                app.config["UPLOAD_FOLDER"], f"{date}.zip", as_attachment=True
-            )
-        except Exception as e:
-            flash(f"Erro: {e}", "alert-danger")
-            return redirect(url_for("covid_bp.receivals"))
+        return send_from_directory(
+            app.config["UPLOAD_FOLDER"], f"{date}.zip", as_attachment=True)
     else:
         try:
             error = celery.AsyncResult(task_id).get()
