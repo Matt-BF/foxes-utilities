@@ -202,7 +202,8 @@ def png_download(task_id, date):
     if status == "SUCCESS":
         return send_from_directory(
             app.config["UPLOAD_FOLDER"], f"{date}.zip", as_attachment=True)
-    else:
+            
+    elif status == "FAILURE":
         try:
             error = celery.AsyncResult(task_id).get()
         except Exception as e:
