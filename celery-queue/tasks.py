@@ -23,9 +23,7 @@ def start_auto_laudo(self, table_name):
     table = pd.concat([table[0], table[1], table[2]]).sort_values(by="Sample")
     auto_laudo(table, validate=True)
 
-@celery.task()
-def start_fetch_receivals(sheet_name, date, save_folder):
+@celery.task(bind=True)
+def start_fetch_receivals(self, sheet_name, date, save_folder):
     fetch_receivals(sheet_name, date, save_folder)
     zip_pngs(date, save_folder)
-
-    return os.path.join(save_folder,f"{date}.zip")

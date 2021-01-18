@@ -4,7 +4,6 @@ from flask import (
     url_for,
     flash,
     send_from_directory,
-    send_file,
     request,
     redirect,
     after_this_request,
@@ -108,7 +107,7 @@ def receivals():
             )
 
             return redirect(
-                url_for("covid_bp.pngs_download", link=task)
+                url_for("covid_bp.pngs_download", task_id=task.id, date=date)
             )
 
         except Exception as e:
@@ -197,15 +196,22 @@ def submission_complete(task_id):
 
     return render_template("submission.html", status=status, error=error)
 
-@covid_bp.route("/extras/pngs", methods=["GET"])
-def pngs_download(link):
-    try:
-        return send_file(
-            link, as_attachment=True
-        )
-    
-    except Exception as e:
-        flash(f"Erro: {e}", "alert-danger")
-        return redirect(url_for("covid_bp.receivals"))
+@covid_bp.route("/extras/pngs_<task_id>_<date>", methods=["GET"])
+def pngs_download(task_id, date):
+    status = celery.AsyncResult(task_id).status
+    error = None
+    if status == "SUCCESS":
+        try:
+            return send_from_directory(
+                app.config["UPLOAD_FOLDER"], f"{date}.zip", as_attachment=True
+            )
+        except Exception as e:
+            flash(f"Erro: {e}", "alert-danger")
+            return redirect(url_for("covid_bp.receivals"))
+    else:
+        try:
+            error = celery.AsyncResult(task_id).get()
+        except Exception as e:
+            error = e
 
-    return render_template("png_download.html", link=link)
+    return render_template("png_download.html", status=status, error=error)
