@@ -107,7 +107,7 @@ def receivals():
             )
 
             return redirect(
-                url_for("covid_bp.submission_complete", task_id=task.id, date=date)
+                url_for("covid_bp.pngs_download", task_id=task.id, date=date)
             )
 
         except Exception as e:
