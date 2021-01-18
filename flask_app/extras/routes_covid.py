@@ -208,5 +208,10 @@ def pngs_download(task_id, date):
         except Exception as e:
             flash(f"Erro: {e}", "alert-danger")
             return redirect(url_for("covid_bp.receivals"))
-
+    else:
+        try:
+            error = celery.AsyncResult(task_id).get()
+        except Exception as e:
+            error = e
+    
     return render_template("png_download.html", status=status, error=error)

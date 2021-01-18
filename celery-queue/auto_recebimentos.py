@@ -65,6 +65,7 @@ def fetch_receivals(sheet_name, date, save_folder):
     df = pd.DataFrame(sheet.get_all_records(default_blank=np.nan))
     labs = set(i.split("-")[0] for i in df.columns)
 
+    labs_df_list = []
     for lab in labs:
         col_filter = [i for i in df.columns if i.split("-")[0] == lab]
         lab_df = df[col_filter]
@@ -86,9 +87,8 @@ def fetch_receivals(sheet_name, date, save_folder):
 
             lab_df.iloc[-1, -1] = f"Recebidas na data: {num_samples}"
             lab_df = lab_df.replace(0, "")
-
-            render_mpl_table(lab_df, header_columns=0)
-            plt.savefig(save_folder,f"{date}_{lab}.png", dpi=600, bbox_inches="tight")
+            labs_df_list.append(lab_df)
+            return labs_df_list
 
 
 def zip_pngs(date, save_folder):
