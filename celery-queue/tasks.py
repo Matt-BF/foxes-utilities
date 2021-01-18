@@ -3,10 +3,9 @@ import sys
 from celery import Celery
 from auto_worklab_chrome import auto_laudo
 from analyze_covid import analyze_csv
-from auto_recebimentos import fetch_receivals, zip_pngs, render_mpl_table
+from auto_recebimentos import fetch_receivals, zip_pngs
 import time
 import pandas as pd
-import matplotlib.pyplot as plt
 
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379')
 CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379')
@@ -26,8 +25,5 @@ def start_auto_laudo(self, table_name):
 
 @celery.task(bind=True)
 def start_fetch_receivals(self, sheet_name, date, save_folder):
-    labs_df_dict = fetch_receivals(sheet_name, date, save_folder)
-    for lab, lab_df in labs_df_dict.items():
-        render_mpl_table(lab_df, header_columns=0)
-        plt.savefig(save_folder,f"{date}_{lab}.png", dpi=600, bbox_inches="tight")
+    fetch_receivals(sheet_name, date, save_folder)
     zip_pngs(date, save_folder)
