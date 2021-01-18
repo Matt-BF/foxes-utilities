@@ -209,4 +209,4 @@ def pngs_download(task_id, date):
             flash(f"Erro: {e}", "alert-danger")
             return redirect(url_for("covid_bp.receivals"))
 
-    return render_template("png_download", status=status, error=error)
+    return render_template("png_download.html", status=status, error=error)
