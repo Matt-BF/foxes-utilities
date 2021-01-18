@@ -196,7 +196,7 @@ def submission_complete(task_id):
     return render_template("submission.html", status=status, error=error)
 
 @covid_bp.route("/extras/pngs_<task_id>_<date>", methods=["GET"])
-def pngs_download(task_id, date):
+def png_download(task_id, date):
     status = celery.AsyncResult(task_id).status
     error = None
     if status == "SUCCESS":
