@@ -24,6 +24,6 @@ def start_auto_laudo(self, table_name):
     auto_laudo(table, validate=True)
 
 @celery.task(bind=True)
-def start_fetch_receivals(self, sheet_name, date):
-    fetch_receivals(sheet_name, date)
-    zip_pngs(date)
+def start_fetch_receivals(self, sheet_name, date, save_folder):
+    fetch_receivals(sheet_name, date, save_folder)
+    zip_pngs(date, save_folder)

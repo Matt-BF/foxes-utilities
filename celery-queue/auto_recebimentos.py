@@ -10,7 +10,6 @@ import math
 import zipfile
 import glob
 import os
-from flask_app import app
 
 def render_mpl_table(
     data,
@@ -49,7 +48,7 @@ def render_mpl_table(
     return ax
 
 
-def fetch_receivals(sheet_name, date):
+def fetch_receivals(sheet_name, date, save_folder):
     # use creds to create a client to interact with the Google Drive API
     scope = [
         "https://www.googleapis.com/auth/spreadsheets",
@@ -89,15 +88,15 @@ def fetch_receivals(sheet_name, date):
             lab_df = lab_df.replace(0, "")
 
             render_mpl_table(lab_df, header_columns=0)
-            plt.savefig(os.path.join(app.config["UPLOAD_FOLDER"],f"{date}_{lab}.png"), dpi=600, bbox_inches="tight")
+            plt.savefig(save_folder,f"{date}_{lab}.png", dpi=600, bbox_inches="tight")
 
 
-def zip_pngs(date):
-    with zipfile.ZipFile(os.path.join(app.config["UPLOAD_FOLDER"],f"{date}.zip"), "w") as zip:
-        for png in glob.glob(os.path.join(app.config["UPLOAD_FOLDER"],f"{date}*.png")):
+def zip_pngs(date, save_folder):
+    with zipfile.ZipFile(os.path.join(save_folder,f"{date}.zip"), "w") as zip:
+        for png in glob.glob(os.path.join(save_folder,f"{date}*.png")):
             zip.write(png, os.path.basename(png))
 
-def zip_pdfs():
-    with zipfile.ZipFile(os.path.join(app.config["UPLOAD_FOLDER"],f"laudos.zip"), "w") as zip:
-        for pdf in glob.glob(os.path.join(app.config["UPLOAD_FOLDER"],"*.pdf")):
+def zip_pdfs(save_folder):
+    with zipfile.ZipFile(os.path.join(save_folder,f"laudos.zip"), "w") as zip:
+        for pdf in glob.glob(os.path.join(save_folder,"*.pdf")):
             zip.write(pdf, os.path.basename(pdf))

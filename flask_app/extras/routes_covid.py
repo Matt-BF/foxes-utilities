@@ -99,9 +99,10 @@ def receivals():
         try:
             form_data = request.form.to_dict()
             date = "".join(form_data["data"].split("-")[::-1][0:2])
+            save_folder = app.config["UPLOAD_FOLDER"]
             task = celery.send_task(
                 "tasks.start_fetch_receivals",
-                args=[form_data["planilha"], date],
+                args=[form_data["planilha"], date, save_folder],
                 kwargs={},
             )
 
@@ -172,7 +173,7 @@ def pdf_route():
             try:
                 separate_laudos(file_path)
                 os.remove(file_path)
-                zip_pdfs()
+                zip_pdfs(app.config["UPLOAD_FOLDER"])
                 return send_from_directory(
                     app.config["UPLOAD_FOLDER"], "laudos.zip", as_attachment=True
                 )
