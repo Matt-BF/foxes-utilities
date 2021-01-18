@@ -97,7 +97,7 @@ def zip_pngs(date):
         for png in glob.glob(os.path.join(app.config["UPLOAD_FOLDER"],f"{date}*.png")):
             zip.write(png, os.path.basename(png))
 
-def zip_pdfs():
+def zip_pdfs(save_folder):
     with zipfile.ZipFile(os.path.join(app.config["UPLOAD_FOLDER"],f"laudos.zip"), "w") as zip:
         for pdf in glob.glob(os.path.join(app.config["UPLOAD_FOLDER"],"*.pdf")):
             zip.write(pdf, os.path.basename(pdf))
