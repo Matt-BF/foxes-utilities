@@ -87,8 +87,8 @@ def fetch_receivals(sheet_name, date, save_folder):
             lab_df.iloc[-1, -1] = f"Recebidas na data: {num_samples}"
             lab_df = lab_df.replace(0, "")
 
-            render_mpl_table(lab_df, header_columns=0)
-            plt.savefig(save_folder,f"{date}_{lab}.png", dpi=600, bbox_inches="tight")
+            figure = render_mpl_table(lab_df, header_columns=0)
+            figure.savefig(save_folder,f"{date}_{lab}.png", dpi=600, bbox_inches="tight")
 
 
 def zip_pngs(date, save_folder):
