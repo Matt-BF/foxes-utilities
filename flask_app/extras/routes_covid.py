@@ -143,15 +143,16 @@ def notify():
             try:
                 date = "".join(form_data["data"].split("-")[::-1][0:2])
                 nums = parse_day_runs(form_data["planilha"], date)
-                laudos = compare_day_laudos(file, nums)
+                laudos = compare_day_laudos(os.path.join(app.config["UPLOAD_FOLDER"],file.filename), nums)
+                send_mail(laudos, form_data["data"])
                 flash("Email enviado para a vigilância", "alert-success")
-                return send_mail(laudos, form_data["data"])
-            except Exception as e:
+                return redirect(url_for("covid_bp.notify"))
+            except KeyError as e:
                 flash(f"Erro: {e}", "alert-danger")
                 return redirect(url_for("covid_bp.notify"))
         else:
             flash("Arquivo inválido, não é um csv", "alert-danger")
-            return redirect(url_for("covid_bp.covid"))
+            return redirect(url_for("covid_bp.notify"))
 
     return render_template("notify.html")
 
