@@ -119,18 +119,39 @@ def receivals():
 
 @covid_bp.route("/extras/notify", methods=["GET", "POST"])
 def notify():
-    if request.method == "POST":
+    csvs = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.csv")
+    for csv in csvs:
         try:
-            form_data = request.form.to_dict()
-            date = "".join(form_data["data"].split("-")[::-1][0:2])
-            nums = parse_day_runs(form_data["planilha"], date)
-            laudos = compare_day_laudos(form_data["worklab_table"], nums)
-            flash("Email enviado para a vigilância", "alert-success")
-            return send_mail(laudos, form_data["data"])
-
-        except Exception as e:
-            flash(f"Erro: {e}", "alert-danger")
+            os.remove(csv)
+        except FileNotFoundError:
+            pass
+    if request.method == "POST":
+        form_data = request.form.to_dict()
+        if "worklab_table" not in request.files:
+            flash("Adicione um arquivo", "alert-danger")
             return redirect(url_for("covid_bp.notify"))
+
+        file = request.files["worklab_table"]
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == "":
+            flash("Sem arquivo inserido", "alert-danger")
+            return redirect(url_for("covid_bp.covid"))
+        if file and "csv" in file.filename:
+            filename = file.filename
+            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            try:
+                date = "".join(form_data["data"].split("-")[::-1][0:2])
+                nums = parse_day_runs(form_data["planilha"], date)
+                laudos = compare_day_laudos(file, nums)
+                flash("Email enviado para a vigilância", "alert-success")
+                return send_mail(laudos, form_data["data"])
+            except Exception as e:
+                flash(f"Erro: {e}", "alert-danger")
+                return redirect(url_for("covid_bp.notify"))
+        else:
+            flash("Arquivo inválido, não é um csv", "alert-danger")
+            return redirect(url_for("covid_bp.covid"))
 
     return render_template("notify.html")
 
