@@ -57,7 +57,7 @@ def send_mail(df, day2):
 
     smtpObj = smtplib.SMTP("smtp.gmail.com", 587)
     smtpObj.starttls()
-    smtpObj.login("cientifico@foxesbm.com", "HEqj245tRhkBNGg")
+    smtpObj.login("mateus.fiamenghi@foxesbm.com", "HEqj245tRhkBNGg")
     msg = MIMEMultipart()
     msg["Subject"] = "Notificações Covid-19 - FoxES"
     msg_text = f"""Boa noite,
