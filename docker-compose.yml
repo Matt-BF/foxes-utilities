@@ -12,7 +12,7 @@ services:
             - 8080:3000
         volumes:
             - uploads-volume:/app/flask_app/uploads
-        restart: always
+        restart: unless-stopped
 
     worker:
         build:
@@ -20,7 +20,7 @@ services:
             dockerfile: Dockerfile
         volumes:
             - uploads-volume:/app/flask_app/uploads
-        restart: always
+        restart: unless-stopped
         depends_on:
             - redis
 
@@ -28,7 +28,7 @@ services:
         image: redis:5.0-alpine
         volumes:
             - redis-volume:/data
-        restart: always
+        restart: unless-stopped
 
 volumes:
     uploads-volume:
