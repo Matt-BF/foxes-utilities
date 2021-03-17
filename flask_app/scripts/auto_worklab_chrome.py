@@ -56,7 +56,12 @@ def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
             try:
                 resultado = driver.find_element_by_id("tbResultado4492")
             except Exception:
-                resultado = driver.find_element_by_id("tbResultado4496")
+                try:
+                    resultado = driver.find_element_by_id("tbResultado4496")
+                except Exception as e:
+                    print(f"Erro ao laudar amostra {codigo}: {e}")
+                    driver.quit()
+
             resultado.send_keys(Keys.CONTROL + "a")
             resultado.send_keys(Keys.DELETE)
             if result_table.loc[code, "Result"] == "POSITIVO":
