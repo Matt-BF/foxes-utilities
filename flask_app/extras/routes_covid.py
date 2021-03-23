@@ -18,6 +18,7 @@ from flask_app.scripts.analyze_covid import consolidate, analyze_csv
 from flask_app.scripts.auto_worklab_chrome import auto_laudo
 from flask_app.scripts.pdf_extract import separate_laudos
 from flask_app.scripts.notifica import parse_day_runs, compare_day_laudos, send_mail
+from flask_app.scripts.make_xml_worklab import make_xml
 
 covid_bp = Blueprint("covid_bp", __name__, template_folder="templates")
 
@@ -203,6 +204,51 @@ def pdf_route():
 
     return render_template("pdf_divide.html")
 
+@covid_bp.route("/extras/make_xml", methods=["GET", "POST"])
+def make_xml_route():
+    xmls = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.xml")
+    for xml in xmls:
+        try:
+            os.remove(xml)
+        except FileNotFoundError:
+            pass
+
+    if request.method == "POST":
+        if "download" in request.form:
+            return send_from_directory(
+                    app.config["UPLOAD_FOLDER"], "modelo.csv", as_attachment=True
+                )
+
+        # check if the post request has the file part
+        if "file" not in request.files:
+            flash("Adicione um arquivo", "alert-danger")
+            return redirect(url_for("covid_bp.make_xml_route"))
+        file = request.files["file"]
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == "":
+            flash("Adicione um arquivo", "alert-danger")
+            return redirect(url_for("covid_bp.make_xml_route"))
+
+        if "csv" not in file.filename:
+            flash("Adicione um arquivo csv", "alert-danger")
+            return redirect(url_for("covid_bp.make_xml_route"))
+
+        if file and "csv" in file.filename:
+            filename = file.filename
+            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+
+            try:
+                xml = make_xml(file_path)
+                os.remove(file_path)
+                return send_from_directory(
+                    app.config["UPLOAD_FOLDER"], xml, as_attachment=True
+                )
+            except Exception as e:
+                flash(f"Há algo de errado com o seu arquivo csv: {e}", "alert-danger")
+    
+    return render_template("make_xml.html")
 
 ## celery views after submission
 @covid_bp.route("/extras/submission_complete_<task_id>", methods=["GET"])

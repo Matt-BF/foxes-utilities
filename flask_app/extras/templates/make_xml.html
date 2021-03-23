@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container-fluid" style="margin-top:2px">
+    <h3>Gerar XML de importação</h3>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert-dismissible fade show alert {{category}}">{{ message }}
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="container-fluid" style="margin-top:2rem">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-control col-md-4">
+                <input id="file" type="file" name="file">
+            </div>
+            <div>
+                <button class="btn btn-primary" style="margin-top:1rem" type=submit value=Upload>Upload</button>
+            </div>
+        </form>
+
+        <div style="margin-top: 3rem;">
+            <p>Obs: Verifique se o seu arquivo csv de input é igual ao modelo abaixo</p>
+            <p>Atente-se especialmente aos Exames separados por vírgula e a data de nascimento no formato dd/mm/aaaa</p>
+            <form method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="download">
+                <button class="btn btn-success" type=submit value=Download>Baixar
+                    Modelo</button></button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}
