@@ -27,7 +27,7 @@ covid_bp = Blueprint("covid_bp", __name__, template_folder="templates")
 def covid():
     csvs = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.csv")
     for csv in csvs:
-        if not csv.startswith("modelo"):
+        if not "modelo" in csv:
             try:
                 os.remove(csv)
             except FileNotFoundError:
@@ -123,7 +123,7 @@ def receivals():
 def notify():
     csvs = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.csv")
     for csv in csvs:
-        if not csv.startswith("modelo"):
+        if not "modelo" in csv:
             try:
                 os.remove(csv)
             except FileNotFoundError:
