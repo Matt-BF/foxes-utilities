@@ -27,10 +27,11 @@ covid_bp = Blueprint("covid_bp", __name__, template_folder="templates")
 def covid():
     csvs = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.csv")
     for csv in csvs:
-        try:
-            os.remove(csv)
-        except FileNotFoundError:
-            pass
+        if not csv.startswith("modelo"):
+            try:
+                os.remove(csv)
+            except FileNotFoundError:
+                pass
 
     if request.method == "POST":
         kind = request.form.to_dict()["plate_type"]
@@ -122,10 +123,11 @@ def receivals():
 def notify():
     csvs = glob.glob(app.config["UPLOAD_FOLDER"] + "/*.csv")
     for csv in csvs:
-        try:
-            os.remove(csv)
-        except FileNotFoundError:
-            pass
+        if not csv.startswith("modelo"):
+            try:
+                os.remove(csv)
+            except FileNotFoundError:
+                pass
     if request.method == "POST":
         form_data = request.form.to_dict()
         if "worklab_table" not in request.files:
