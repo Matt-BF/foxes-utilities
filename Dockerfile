@@ -26,7 +26,7 @@ RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
 RUN export LC_ALL=en_US.UTF-8
 
 #Copy files to image and set new workdir
-ADD . /app
+COPY . /app
 #set new workdir
 WORKDIR /app
 
