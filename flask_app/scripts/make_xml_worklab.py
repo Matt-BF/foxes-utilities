@@ -59,7 +59,9 @@ def make_xml(csv):
             cod_exam_lab = ET.SubElement(exame, "CodExmLab")
             cod_exam_lab.text = f"1543|{exam_code}|1"
             data_coleta = ET.SubElement(exame, "DataColeta")
-            data_coleta.text = str(now.date())
+            data_coleta.text = str(
+            datetime.strftime(datetime.strptime(df.loc[idx, "Coleta"], "%d/%m/%Y"), "%Y-%m-%d")
+        )
 
     tree = ET.ElementTree(root)
     file_name = f"{str(now.date()).replace('-','')}_arquivo_importacao.xml"
