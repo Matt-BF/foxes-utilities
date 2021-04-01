@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime
 from flask_app import app
 import os
+import secrets
 
 def make_xml(csv):
     df = pd.read_csv(csv)
@@ -34,7 +35,7 @@ def make_xml(csv):
         pedido = ET.SubElement(lote, "Pedido")
 
         cod_ped_lab = ET.SubElement(pedido, "CodPedLab")
-        cod_ped_lab.text = str(idx + 1)
+        cod_ped_lab.text = secrets.token_hex(nbytes=16)
         data_ped = ET.SubElement(pedido, "DataPed")
         data_ped.text = str(now.date())
         hora_ped = ET.SubElement(pedido, "HoraPed")
