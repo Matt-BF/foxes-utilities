@@ -7,7 +7,9 @@ import time
 import argparse
 import warnings
 import os
+
 warnings.filterwarnings(action="ignore")
+
 
 def auto_laudo(result_table, validate=True):
     INCONCLUSIVE = []
@@ -18,8 +20,10 @@ def auto_laudo(result_table, validate=True):
     chrome_prefs = {}
     options.experimental_options["prefs"] = chrome_prefs
     chrome_prefs["profile.default_content_settings"] = {"images": 2}
-    
-    driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=options)
+
+    driver = webdriver.Chrome(
+        executable_path=ChromeDriverManager().install(), options=options
+    )
 
     driver.get("https://app.worklabweb.com.br/index.php")
 
@@ -42,7 +46,7 @@ def auto_laudo(result_table, validate=True):
     driver.find_element_by_xpath(
         "/html/body/form/div/div[1]/div[3]/div[2]/div/a[1]/img"
     ).click()  # tela de insercao de resultados
-    
+
     print("\n", "INSERINDO LAUDOS", "\n")
     # estou na tela de insercao de resultados
     for code in result_table.index:
@@ -94,6 +98,7 @@ def auto_laudo(result_table, validate=True):
                 codigo.send_keys(Keys.ENTER)
 
                 driver.find_element_by_id("btExame1").click()
+                time.sleep(0.5)  # para tentar burlar o delay ridiculo do worklab
                 driver.find_element_by_id("btSalvar").click()
 
     driver.quit()
