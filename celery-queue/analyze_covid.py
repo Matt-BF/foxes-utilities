@@ -54,8 +54,8 @@ def analyze_csv(plate_csv, drop=False, kind="384"):
     return (pos, neg, inc)
 
 
-def consolidate(plate_csv):
-    anal = analyze_csv(plate_csv)
+def consolidate(plate_csv, kind="384"):
+    anal = analyze_csv(plate_csv, kind=kind)
     anal[0]["Result"] = "POSITIVO"
     anal[1]["Result"] = "NEGATIVO"
     anal[2]["Result"] = "INCONCLUSIVO"

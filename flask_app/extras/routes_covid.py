@@ -81,8 +81,8 @@ def covid_result(table_file, kind):
             table=consolidated_table,
             cols=cols,
         )
-    except Exception:
-        flash("Sua placa está fora dos padrões, favor reveja", "alert-danger")
+    except Exception as e:
+        flash(f"Sua placa está fora dos padrões, favor reveja {e}", "alert-danger")
         return redirect(url_for("covid_bp.covid"))
 
 
