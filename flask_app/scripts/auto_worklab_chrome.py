@@ -56,12 +56,7 @@ def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
             try:
                 resultado = driver.find_element_by_id("tbResultado4492")
             except Exception:
-                try:
-                    resultado = driver.find_element_by_id("tbResultado4496")
-                except Exception as e:
-                    print(f"Erro ao laudar amostra {codigo}: {e}")
-                    driver.quit()
-
+                resultado = driver.find_element_by_id("tbResultado4496")
             resultado.send_keys(Keys.CONTROL + "a")
             resultado.send_keys(Keys.DELETE)
             if result_table.loc[code, "Result"] == "POSITIVO":
@@ -70,7 +65,20 @@ def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
             else:
                 resultado.send_keys("N")
                 driver.find_element_by_id("btSalvar").click()
-
+            time.sleep(0.3)
+            try:
+                driver.find_element_by_id("btExame7").click()   #botao do exame2
+                resultado = driver.find_element_by_id("tbResultado4497")
+                resultado.send_keys(Keys.CONTROL + "a")
+                resultado.send_keys(Keys.DELETE)
+                if result_table.loc[code, "Result"] == "POSITIVO":
+                    resultado.send_keys("PRES")
+                    driver.find_element_by_id("btSalvar").click()
+                else:
+                    resultado.send_keys("UNP")
+                    driver.find_element_by_id("btSalvar").click()
+            except Exception:
+                continue
         # salvar os inconclusivos para ver na mao
         else:
             INCONCLUSIVE.append(code)
@@ -81,22 +89,25 @@ def auto_laudo(result_table, chromedriver_path, headless=False, validate=True):
         driver.find_element_by_xpath(
             "/html/body/form/div/div[1]/div[3]/div[2]/div/a[2]"
         ).click()
-
-        for code in result_table.index:
-            if result_table.loc[code, "Result"] != "INCONCLUSIVO" and code.isdigit():
-                # abrir pagina do paciente pelo codigo
-                codigo = driver.find_element_by_id(
-                    "tbCodigoPaciente"
-                )  # celula de codigo
-                # apagar o que tiver na celula e escrever o codigo
-                codigo.send_keys(Keys.CONTROL + "a")
-                codigo.send_keys(Keys.DELETE)
-                codigo.send_keys(code)
-                codigo.send_keys(Keys.ENTER)
-
-                driver.find_element_by_id("btExame1").click()
+    for code in result_table.index:
+        if result_table.loc[code, "Result"] != "INCONCLUSIVO" and code.isdigit():
+            # abrir pagina do paciente pelo codigo
+            codigo = driver.find_element_by_id("tbCodigoPaciente")  # celula de codigo
+            # apagar o que tiver na celula e escrever o codigo
+            codigo.send_keys(Keys.CONTROL + "a")
+            codigo.send_keys(Keys.DELETE)
+            codigo.send_keys(code)
+            codigo.send_keys(Keys.ENTER)
+            #conferir resultados
+            driver.find_element_by_id("btExame1").click()
+            time.sleep(0.15)
+            driver.find_element_by_id("btSalvar").click()
+            try:
+                driver.find_element_by_id("btExame2").click()
+                time.sleep(0.15)
                 driver.find_element_by_id("btSalvar").click()
-
+            except Exception:
+                continue
     driver.quit()
 
     print(INCONCLUSIVE, len(INCONCLUSIVE) - 2)
